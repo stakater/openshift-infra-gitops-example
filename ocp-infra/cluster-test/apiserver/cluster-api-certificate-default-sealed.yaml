@@ -1,0 +1,9 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: cluster-api-certificate-default
+  namespace: openshift-config
+spec:
+  encryptedData:
+    tls.crt: ...
+    tls.key: ...

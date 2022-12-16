@@ -1,0 +1,32 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: ldap
+    mappingMethod: claim
+    type: LDAP
+    ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - sAMAccountName
+      bindDN: "CN=Service Account LDAP OpenShift,OU=Service Accounts,OU=Administration,DC=foo,DC=org,DC=com"
+      bindPassword:
+        name: ldap-secret
+      ca:
+        name: org-ca-config-map
+      insecure: false
+      url: "ldaps://foo.org.com:636/DC=foo,DC=org,DC=com?sAMAccountName?sub?(&(objectCategory=person)(objectClass=user)(memberOf:1.2.840.113556.1.4.1941:=CN=acl.openshift.access.foo,OU=Security Groups Applications,OU=Groups,OU=Organization,DC=foo,DC=org,DC=com))"
+  - name: htpasswd
+    mappingMethod: claim
+    type: HTPasswd
+    htpasswd:
+      fileData:
+        name: htpass-secret

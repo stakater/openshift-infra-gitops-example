@@ -1,0 +1,37 @@
+apiVersion: redhatcop.redhat.io/v1alpha1
+kind: GroupSync
+metadata:
+  name: ldap-groups
+  annotations:
+    argocd.argoproj.io/sync-options: Validate=false
+spec:
+  providers:
+  - name: ldap-organization
+    ldap:
+      whitelist:
+      - CN=test,OU=Security Groups Applications,OU=Groups,OU=Organization,DC=foo,DC=org,DC=com
+      - CN=test,OU=Security Groups Applications,OU=Groups,OU=Organization,DC=foo,DC=org,DC=com
+      url: ldaps://org.domain001.foo.org.no:636
+      credentialsSecret:
+        name: ldap-group-sync
+        namespace: group-sync-operator
+      caSecret:
+        name: org-ca-secret
+        namespace: group-sync-operator
+        key: ca.crt
+      insecure: false
+      augmentedActiveDirectory:
+        groupsQuery:
+          baseDN: "OU=Security Groups Applications,OU=Groups,OU=Organization,DC=foo,DC=org,DC=com"
+          derefAliases: never
+          pageSize: 0
+        groupUIDAttribute: dn
+        groupNameAttributes: [ cn ]
+        groupMembershipAttributes: [ "memberOf:1.2.840.113556.1.4.1941:" ]
+        usersQuery:
+          baseDN: "OU=Administration,DC=foo,DC=org,DC=com"
+          scope: sub
+          derefAliases: never
+          filter: (objectclass=organizationalPerson)
+          pageSize: 0
+        userNameAttributes: [ sAMAccountName ]

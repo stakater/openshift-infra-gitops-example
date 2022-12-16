@@ -1,0 +1,96 @@
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: prometheus
+  namespace: openshift-monitoring
+spec:
+  name: Prometheus
+  group: Infrastructure Monitoring
+  icon: https://github.com/stakater/ForecastleIcons/raw/master/prometheus.png
+  urlFrom:
+    routeRef:
+      name: prometheus-k8s
+  networkRestricted: false
+---
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: grafana
+  namespace: openshift-monitoring
+spec:
+  name: Grafana
+  group: Infrastructure Monitoring
+  icon: https://github.com/stakater/ForecastleIcons/raw/master/grafana.png
+  urlFrom:
+    routeRef:
+      name: grafana
+  networkRestricted: false
+---
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: argocd
+  namespace: openshift-gitops
+spec:
+  name: ArgoCD
+  group: CI&CD
+  icon: https://raw.githubusercontent.com/argoproj/argo-cd/master/docs/assets/argo.png
+  urlFrom:
+    routeRef:
+      name: argocd-server
+---
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: alertmanager
+  namespace: openshift-monitoring
+spec:
+  name: AlertManager
+  group: Infrastructure Monitoring
+  icon: https://github.com/stakater/ForecastleIcons/raw/master/alert-manager.png
+  urlFrom:
+    routeRef:
+      name: alertmanager-main
+  networkRestricted: false
+---
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: kibana
+  namespace: openshift-logging
+spec:
+  name: Kibana
+  group: Logging
+  icon: https://github.com/stakater/ForecastleIcons/raw/master/kibana.png
+  urlFrom:
+    routeRef:
+      name: kibana
+  networkRestricted: false
+---
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: console
+  namespace: openshift-console
+spec:
+  name: Openshift Console
+  group: Dashboard
+  icon: https://github.com/stakater/ForecastleIcons/raw/master/redhatopeshift.png
+  urlFrom:
+    routeRef:
+      name: console
+  networkRestricted: false
+---
+apiVersion: forecastle.stakater.com/v1alpha1
+kind: ForecastleApp
+metadata:
+  name: thanos-querier
+  namespace: openshift-monitoring
+spec:
+  name: Thanos-querier
+  group: Infrastructure Monitoring
+  icon: https://github.com/stakater/ForecastleIcons/raw/master/prometheus.png
+  urlFrom:
+    routeRef:
+      name: thanos-querier
+  networkRestricted: false

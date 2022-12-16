@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: proxy
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: '*'
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cluster-prod/proxy
+    repoURL:  git@github.com:stakater/openshift-infra-gitops-example.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  ignoreDifferences:
+  - kind: ConfigMap
+    name: openshift-user-ca
+    namespace: openshift-controller-manager
+    jsonPointers:
+    - /status

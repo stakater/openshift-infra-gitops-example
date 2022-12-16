@@ -1,0 +1,28 @@
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  finalizers:
+    - ingresscontroller.operator.openshift.io/finalizer-ingresscontroller
+  name: default
+  namespace: openshift-ingress-operator
+spec:
+  clientTLS:
+    clientCA:
+      name: ""
+    clientCertificatePolicy: ""
+  defaultCertificate:
+    name: cluster-ingress-certificate-default
+  httpEmptyRequestsPolicy: Respond
+  httpErrorCodePages:
+    name: ""
+  replicas: 3
+  tuningOptions: {}
+  unsupportedConfigOverrides: null
+  nodePlacement:
+    nodeSelector:
+      matchLabels:
+        node-role.kubernetes.io/infra: ""
+  logging:
+    access:
+      destination:
+        type: Container

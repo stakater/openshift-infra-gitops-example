@@ -1,0 +1,17 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: cluster-api-certificate-default
+  namespace: openshift-config
+spec:
+  encryptedData:
+    tls.crt: <placeholder>
+    tls.key: <placeholder>
+  template:
+    data: null
+    metadata:
+      creationTimestamp: null
+      name: cluster-api-certificate-default
+      namespace: openshift-config
+    type: kubernetes.io/tls

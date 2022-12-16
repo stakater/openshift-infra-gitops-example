@@ -1,0 +1,10 @@
+apiVersion: config.openshift.io/v1
+kind: Proxy
+metadata:
+  name: cluster
+spec:
+  httpProxy: http://webproxy.foo.org.com:8088
+  httpsProxy: http://webproxy.foo.org.com:8088
+  noProxy: .org.com,10.0.0.0/8 #TODO IP Range changes per env
+
+

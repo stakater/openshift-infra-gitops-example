@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ../../base/group-sync-instance
+
+resources:
+  - org-ca-secret.yaml
+
+patchesStrategicMerge:
+  - group-sync-instance.yaml
+  - ldap-group-sync-secret-sealed.yaml

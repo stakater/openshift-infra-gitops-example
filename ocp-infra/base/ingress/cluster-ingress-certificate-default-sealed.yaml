@@ -1,0 +1,9 @@
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: cluster-ingress-certificate-default
+  namespace: openshift-ingress
+spec:
+  encryptedData:
+    tls.crt: <placeholder>
+    tls.key: <placeholder>

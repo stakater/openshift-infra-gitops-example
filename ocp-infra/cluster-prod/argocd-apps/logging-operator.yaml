@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logging-operator
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: '*'
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: cluster-prod/logging-operator
+    repoURL:  git@github.com:stakater/openshift-infra-gitops-example.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

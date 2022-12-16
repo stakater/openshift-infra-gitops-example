@@ -1,0 +1,63 @@
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogging
+metadata:
+  name: instance
+  namespace: openshift-logging
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  managementState: Managed
+  logStore:
+    type: elasticsearch
+    elasticsearch:
+      nodeCount: 3
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+      resources:
+        # limits can't be removed
+        limits:
+          memory: 12Gi
+        requests:
+          cpu: 1400m
+          memory: 12Gi
+      storage:
+        storageClassName: org-nfs-storage
+        size: "300G"
+      redundancyPolicy: SingleRedundancy
+    retentionPolicy:
+      application:
+        maxAge: 7d
+      infra:
+        maxAge: 3d
+      audit:
+        maxAge: 1d
+  visualization:
+    type: kibana
+    kibana:
+      nodeSelector:
+        node-role.kubernetes.io/infra: ""
+      replicas: 2
+      resources:
+        limits:
+          memory: 5Gi
+        requests:
+          cpu: 200m
+          memory: 1.75Gi
+  collection:
+    logs:
+      type: fluentd
+      fluentd:
+        resources:
+          limits:
+            memory: 3Gi
+          requests:
+            cpu: 200m
+            memory: 1Gi
+  forwarder:
+    fluentd:
+      buffer:
+        chunkLimitSize: 32m
+        flushThreadCount: 16
+        flushInterval: 6s
+        retryWait: 3s

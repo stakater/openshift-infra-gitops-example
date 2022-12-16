@@ -1,0 +1,19 @@
+apiVersion: config.openshift.io/v1
+kind: APIServer
+metadata:
+  name: cluster
+  annotations:
+    include.release.openshift.io/ibm-cloud-managed: "true"
+    include.release.openshift.io/self-managed-high-availability: "true"
+    include.release.openshift.io/single-node-developer: "true"
+    oauth-apiserver.openshift.io/secure-token-storage: "true"
+    release.openshift.io/create-only: "true"
+spec:
+  audit:
+    profile: Default
+  servingCerts:
+    namedCertificates:
+      - names:
+          - api.test.org.no
+        servingCertificate:
+          name: cluster-api-certificate-default
