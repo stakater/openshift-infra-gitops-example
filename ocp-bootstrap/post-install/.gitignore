@@ -1,0 +1,5 @@
+gitops
+gitops-manifests/argocd/
+gitops-manifests/apiserver/
+gitops-manifests/ingress/
+kubeconfig.backup

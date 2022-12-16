@@ -1,0 +1,113 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  name: argocd
+  namespace: openshift-gitops
+spec:
+{% if server == True %}
+  server:
+    resources:
+      limits:
+        cpu: {{ server_cpu_limit }}
+        memory: {{ server_mem_limit }}
+      requests:
+        cpu: {{ server_cpu_request }}
+        memory: {{ server_mem_request }}
+{% endif %}
+{% if server_route == True %}
+    route:
+      enabled: true
+      tls:
+        termination: edge
+        insecureEdgeTerminationPolicy: Redirect
+{% endif %}
+{% if grafana == True %}
+  grafana:
+    route:
+      enabled: {{ grafana_route }}
+    enabled: true
+{% endif %}
+{% if prometheus == True %}
+  prometheus:
+    route:
+      enabled: {{ prometheus_route }}
+    enabled: true
+{% endif %}
+  rbac:
+    defaultPolicy: 'role:app-admin'
+    policy: |
+      p, role:app-admin, applications, *, */*, allow
+      g, system:cluster-admins, role:admin
+    scopes: '[groups]'
+  repo:
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+  dex:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+    openShiftOAuth: true
+  initialSSHKnownHosts:
+    excludedefaulthosts: false
+    keys: |
+{{ lookup('file', '{{ repo_known_hosts }}') | indent(6, true)}}
+
+{% if git_ssh_enabled == True %}
+  repositoryCredentials: |
+    - sshPrivateKeySecret:
+        key: sshPrivateKey
+        name: gitops-repo
+      type: git
+      url: "ssh://git@{{ git_hostname_and_port }}/{{ gitops_repo_path }}"
+{% else %}
+  repositoryCredentials: |
+    - type: git
+      url: https://{{ git_hostname_and_port }}/{{ gitops_repo_path }}
+      passwordSecret: 
+        key: password
+        name: gitops-repo
+      usernameSecret:
+        key: username
+        name: gitops-repo
+{% endif %}
+
+  ha:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+    enabled: true
+  redis:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 250m
+        memory: 128Mi
+  controller:
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 2048Mi
+      requests:
+        cpu: 250m
+        memory: 1024Mi
+    sharding:
+      enabled: true
+      replicas: 3
+    appSync: 3m
+    logFormat: json
+  statusBadgeEnabled: true

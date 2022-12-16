@@ -1,0 +1,35 @@
+server: true
+server_cpu_limit: 500m
+server_mem_limit: 500Mi
+server_cpu_request: 200m
+server_mem_request: 200Mi
+server_route: true
+grafana: true
+grafana_route: true
+prometheus: true
+prometheus_route: true
+
+kubeconfig_path: ../../install_dir/conf/auth/kubeconfig
+
+git_hostname_and_port: gitserver.acme.com:7999
+gitops_repo_path: /org/repo.git
+appofapps_path: cluster-test/argocd-apps
+
+git_ssh_enabled: False
+
+# For SSH connections
+repo_pub_ssh_key_file: keys/key.pub
+repo_pvt_ssh_key_file: keys/key
+# SSH known_hosts file that will be added to Argo's known hosts
+repo_known_hosts: known_hosts
+
+# For HTTP connections
+# repo_git_http_username: username
+# repo_git_http_password: password
+
+# When using SSH, you can use this to enable a TCP proxy so that we can access Github over SSH through an HTTP proxy
+# Make sure git_hostname_and_port points to gh-proxy (default port)
+github_proxy_enabled: false
+# Format: {proxy_hostname}:{proxy_port}
+github_proxy_server: proxy.customer.example
+github_proxy_server_port: 8080

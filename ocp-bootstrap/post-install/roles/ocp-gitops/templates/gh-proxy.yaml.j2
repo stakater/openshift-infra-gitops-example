@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gh-proxy
+  name: gh-proxy
+  namespace: openshift-gitops
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gh-proxy
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: gh-proxy
+    spec:
+      containers:
+      - args:
+        - tcp-listen:8080,fork,reuseaddr
+        - proxy:{{ github_proxy_server }}:ssh.github.com:443,proxyport={{ github_proxy_server_port }}
+        command:
+        - socat
+        image: alpine/socat
+        imagePullPolicy: Always
+        name: socat
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 10m
+            memory: 50Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gh-proxy
+  namespace: openshift-gitops
+  labels:
+    app: gh-proxy
+spec:
+  ports:
+  - name: 22-8080
+    protocol: TCP
+    port: 22
+    targetPort: 8080
+  - name: 443-8080
+    protocol: TCP
+    port: 443
+    targetPort: 8080
+  selector:
+    app: gh-proxy
+  type: ClusterIP

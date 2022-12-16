@@ -1,0 +1,8 @@
+---
+- name: Install GitOps on OCP
+  hosts: localhost
+  gather_facts: false 
+  vars_files:
+  - gitops
+  roles:
+  - role: ocp-gitops

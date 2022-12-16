@@ -1,0 +1,86 @@
+---
+- name: Create the namespace
+  shell: |
+    oc apply -f {{ role_path }}/files/argocd-ns.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Create manifests folder
+  file:
+    path: gitops-manifests/argocd
+    state: directory
+
+- name: Render gh-proxy pod deployment manifest
+  template:
+    src: "{{ role_path }}/templates/gh-proxy.yaml.j2"
+    dest: gitops-manifests/argocd/gh-proxy.yaml
+  when: github_proxy_enabled
+
+- name: Create the gh-proxy
+  shell: |
+    oc apply -f gitops-manifests/argocd/gh-proxy.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+  when: github_proxy_enabled
+
+- name: Create the subscription
+  shell: |
+    oc apply -f {{ role_path }}/files/subscription.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+# Wait for subscription to deploy operator
+- name: Wait workaround for subscription
+  wait_for:
+    timeout: 120
+
+- name: Create Cluster role binding so ArgoCD can deploy cluster resources
+  shell: |
+    oc apply -f {{ role_path }}/files/clusterrolebinding.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Render Credentials secret
+  template:
+    src: credentials_secret.yaml.j2
+    dest: /tmp/credentials_secret.yaml
+
+- name: Create Credentials secret
+  shell: |
+    oc apply -f /tmp/credentials_secret.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Delete default ArgoCD instance
+  shell: |
+    oc delete gitopsservice cluster -n openshift-gitops --ignore-not-found=true
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Render ArgoCD instance manifest
+  template:
+    src: "{{ role_path }}/templates/argocd.yaml.j2"
+    dest: gitops-manifests/argocd/argocd.yaml
+
+- name: Create ArgoCD Instance
+  shell: |
+    oc apply -f gitops-manifests/argocd/argocd.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Create the default project in ArgoCD
+  shell: |
+    oc apply -f {{ role_path }}/files/argocd-default.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
+
+- name: Render AppofApps manifest
+  template:
+    src: "{{ role_path }}/templates/app_of_apps.yaml.j2"
+    dest: gitops-manifests/argocd/app_of_apps.yaml
+
+- name: Create the app_of_apps
+  shell: |
+    oc apply -f gitops-manifests/argocd/app_of_apps.yaml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"

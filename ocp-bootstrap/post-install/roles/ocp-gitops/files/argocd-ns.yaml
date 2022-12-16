@@ -1,0 +1,7 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: openshift-gitops
+  labels:
+    kubernetes.io/metadata.name: openshift-gitops
+    openshift.io/cluster-monitoring: 'true'
