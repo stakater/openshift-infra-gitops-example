@@ -11,7 +11,7 @@ spec:
   source:
     path: cluster-dev/rbac
     repoURL:  git@github.com:stakater/openshift-infra-gitops-example.git
-    targetRevision: HEAD
+    targetRevision: basic
   syncPolicy:
     automated:
       prune: true
