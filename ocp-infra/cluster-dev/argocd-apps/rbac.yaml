@@ -9,7 +9,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: cluster-dev/rbac
+    path: ocp-infra/cluster-dev/rbac
     repoURL:  https://github.com/stakater/openshift-infra-gitops-example
     targetRevision: basic
   syncPolicy:
