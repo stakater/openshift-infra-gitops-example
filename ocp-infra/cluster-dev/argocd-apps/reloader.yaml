@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: reloader
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: stakater-reloader
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: ocp-infra/cluster-dev/reloader
+    repoURL:  https://github.com/stakater/openshift-infra-gitops-example
+    targetRevision: basic
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
